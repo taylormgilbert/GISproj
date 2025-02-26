@@ -1,0 +1,82 @@
+---
+title: "README"
+author: "Taylor Gilbert"
+date: "2025-02-26"
+output:  rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Install and load the rINat package
+install.packages("xfun")
+install.packages("devtools")
+devtools::install_github("ropensci/rINat", force = TRUE)
+install.packages("rinat", lib = "C:/Users/gilbe/AppData/Local/R/win-library/4.3")
+
+# Load the rinat package
+library(rinat)
+
+# List all available functions in rinat
+ls("package:rinat")
+
+# Fetch observations for Loxodonta cyclotis (African Forest Elephant)
+elephant_obs <- get_inat_obs(taxon_name = "Loxodonta cyclotis", quality = "research")
+
+# Check the data
+head(elephant_obs)
+
+
+# Check the data
+head(elephant_obs)
+
+
+
+```
+
+```{r}
+# Extract the columns you need: latitude, longitude, date, and scientific_name
+elephant_coords <- elephant_obs[, c("latitude", "longitude", "datetime", "scientific_name")]
+
+# Remove rows with missing values
+elephant_coords <- elephant_coords[complete.cases(elephant_coords), ]
+
+# View the cleaned data
+head(elephant_coords)
+
+```
+```{r}
+# Install and load ggmap for plotting
+install.packages("ggmap")
+library(ggmap)
+
+install.packages("rnaturalearth")
+install.packages("ggplot2")
+
+library(rnaturalearth)
+library(ggplot2)
+
+# Get a map of Africa
+africa_map <- ne_countries(continent = "Africa", returnclass = "sf")
+
+# Plot the map using ggplot2
+ggplot(data = africa_map) +
+  geom_sf() +
+  theme_minimal() +
+  ggtitle("Map of Africa")
+
+```
+```{r}
+# Plot the elephant distribution on the map
+ggplot() +
+  geom_sf(data = africa_map, fill = "coral") +  # Plot Africa map
+  geom_point(data = elephant_coords, aes(x = longitude, y = latitude), 
+             color = "navyblue", alpha = 0.5, size = 3) +  # Plot elephant locations
+  theme_minimal() +
+  ggtitle("Distribution of African Forest Elephants (*Loxodonta cyclotis*)") +
+  theme(axis.text = element_blank(), axis.title = element_blank())
+
+```
+
