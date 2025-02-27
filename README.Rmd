@@ -47,6 +47,7 @@ elephant_coords <- elephant_coords[complete.cases(elephant_coords), ]
 head(elephant_coords)
 
 ```
+
 ```{r}
 # Install and load ggmap for plotting
 install.packages("ggmap")
@@ -68,6 +69,7 @@ ggplot(data = africa_map) +
   ggtitle("Map of Africa")
 
 ```
+
 ```{r}
 # Plot the elephant distribution on the map
 ggplot() +
@@ -77,6 +79,117 @@ ggplot() +
   theme_minimal() +
   ggtitle("Distribution of African Forest Elephants (*Loxodonta cyclotis*)") +
   theme(axis.text = element_blank(), axis.title = element_blank())
+
+```
+```{r}
+
+```
+
+```{r}
+class(ifl_africa_2020)
+library(sf)
+
+# Convert SpatVector to sf object
+ifl_africa_2020_sf <- st_as_sf(ifl_africa_2020)
+
+
+# Load required libraries
+library(sf)
+library(ggplot2)
+
+# Specify the path to your ZIP file
+zip_file_path <- "C:/Users/gilbe/Desktop/Hons/Mod 4/8e76854e-6afa-4b3e-9efa-42594d22176c.zip"
+
+# Specify the directory where you want to unzip the file
+unzip_dir <- "C:\\Users\\gilbe\\Desktop\\Hons\\Mod 4"
+
+# Unzip the file
+unzip(zip_file_path, exdir = unzip_dir)
+
+# Check the directory to confirm the files were extracted
+list.files(unzip_dir)
+
+# Update the shapefile path to point to the .shp file inside the extracted folder
+shapefile_path <- "C:/Users/gilbe/Desktop/Hons/Mod 4/africa_shapefile/afr_g2014_2013_0.shp"
+
+# Read the shapefile into R
+africa_shapefile <- st_read(shapefile_path)
+
+# Check the structure of the shapefile
+str(africa_shapefile)
+
+# Assuming `elephant_sf` and `forest_sf` are already loaded as sf objects
+# Plot the shapefile, elephant data, and forest data together
+ggplot() +
+  # Plot the Africa shapefile
+  geom_sf(data = africa_shapefile, fill = "coral", color = "black") +
+  # Plot the elephant data points
+  geom_sf(data = elephant_sf, aes(color = "navyblue"), size = 3) + 
+  # Plot the forest data points
+  geom_sf(data = ifl_africa_2020_sf, aes(color = "green"), size = 3) +
+  # Customize the plot
+  theme_minimal() +
+  ggtitle("Map of Africa with Elephant and Forest Data") +
+  scale_color_manual(values = c("Elephants" = "navyblue", "Intact forest" = "green"),
+                     name= "Legend",
+                     breaks= c("Elephnats", "Intact forest"),
+                     labels = c("Elephants", "Intact forest"))+
+  theme(legend.title = element_blank())
+
+
+```
+```{r}
+# Install and load necessary packages if not already done
+install.packages("unzip")
+library(unzip)
+
+# Specify the ZIP file path
+zip_file_path <- "C:/Users/gilbe/Desktop/Hons/Mod 4/8e76854e-6afa-4b3e-9efa-42594d22176c.zip"
+
+# Unzip the file to a specified directory (you can change the directory path as needed)
+unzip(zip_file_path, exdir = "C:/Users/gilbe/Desktop/Hons/Mod 4/africa_shapefile")
+
+# Check the directory to confirm the files were extracted
+list.files("C:/Users/gilbe/Desktop/Hons/Mod 4/africa_shapefile")
+# Update the shapefile path to point to the .shp file inside the extracted folder
+shapefile_path <- "C:/Users/gilbe/Desktop/Hons/Mod 4/africa_shapefile/africa_shapefile.shp"
+
+# Read the shapefile into R as an sf object
+africa_shapefile <- st_read(shapefile_path)
+
+# Check the structure of the shapefile
+str(africa_shapefile)
+
+
+```
+```{r}
+# Add a factor column to your data to specify colors
+elephant_sf$group <- "Elephants"
+ifl_africa_2020_sf$group <- "Intact forest"
+
+# Now, plot the data
+ggplot() +
+  # Plot the Africa map
+  geom_sf(data = africa_shapefile, fill = "coral", color = "grey20") +
+  
+  # Plot the elephant data (navy blue dots)
+  geom_sf(data = elephant_sf, aes(color = group), shape = 16, size = 3) +
+  
+  # Plot the forest data (green dots)
+  geom_sf(data = ifl_africa_2020_sf, aes(color = group), shape = 16, size = 3) +
+  
+  # Customize the color scale and legend labels
+  scale_color_manual(values = c("Elephants" = "navyblue", "Intact forest" = "green"),
+                     name = "Legend",
+                     breaks = c("Elephants", "Intact forest"),
+                     labels = c("Elephants", "Intact forest")) +
+  
+  # Add labels and title
+  labs(title = "Map of Africa showing elephant distribution and intact forests") +
+  
+  # Theme adjustments
+  theme_minimal() +
+  theme(legend.position = "right")
 
 ```
 
